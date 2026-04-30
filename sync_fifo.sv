@@ -41,32 +41,25 @@ always_comb begin
 
     if (wr_en_i && rd_en_i) begin
         if(!empty_o) begin
-            if (wrptr_q == DEPTH-1)
-                wrptr_d = '0;
-            else
-                wrptr_d = wrptr_q + 1;
-
-            if (rdptr_q == DEPTH-1)
-                rdptr_d = '0;
-            else
-                rdptr_d = rdptr_q + 1;
+            wrptr_d = wrptr_q + 1;
+            rdptr_d = rdptr_q + 1;
             count_d = count_q;
         end
     end
     else if (wr_en_i && !full_o) begin
-        if (wrptr_q == DEPTH-1)
-            wrptr_d = '0;
-        else
-            wrptr_d = wrptr_q + 1;
+        wrptr_d = wrptr_q + 1;
         count_d = count_q + 1;
 
     end
     else if (rd_en_i && !empty_o) begin
-        if (rdptr_q == DEPTH-1)
-            rdptr_d = '0;
-        else
-            rdptr_d = rdptr_q + 1;
+        rdptr_d = rdptr_q + 1;
         count_d = count_q - 1;
+    end
+    if (wrptr_d >= DEPTH) begin
+        wrptr_d = '0;
+    end
+    if (rdptr_d >= DEPTH) begin
+        rdptr_d = '0;
     end
 end
 
@@ -95,6 +88,5 @@ always_ff @(posedge clk) begin
         end
     end
 end
-
 
 endmodule
