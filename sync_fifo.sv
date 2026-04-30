@@ -32,9 +32,6 @@ logic [ncount:0] count_d;
 
 assign empty_o = (count_q == 0);
 assign full_o = (count_q == DEPTH);
-assign dout_o = 
-    empty_o ? '0 :
-    mem[wrptr_q];
 
 
 always_comb begin
@@ -43,7 +40,7 @@ always_comb begin
     count_d = count_q;
 
     if (wr_en_i && rd_en_i) begin
-        if (!empty_o) begin
+        if(!empty_o) begin
             if (wrptr_q == DEPTH-1)
                 wrptr_d = '0;
             else
@@ -53,8 +50,8 @@ always_comb begin
                 rdptr_d = '0;
             else
                 rdptr_d = rdptr_q + 1;
+            count_d = count_q;
         end
-        count_d = count_q;
     end
     else if (wr_en_i && !full_o) begin
         if (wrptr_q == DEPTH-1)
@@ -78,6 +75,7 @@ always_ff @(posedge clk) begin
         wrptr_q <= '0;
         rdptr_q <= '0;
         count_q <= '0;
+        dout_o <= '0;
     end
     else begin
         wrptr_q <= wrptr_d;
@@ -86,8 +84,14 @@ always_ff @(posedge clk) begin
         if (wr_en_i && ((!rd_en_i && !full_o) || (rd_en_i && !empty_o))) begin
             mem[wrptr_q] <= din_i;
         end
-        if(empty_o && wr_en_i && rd_en_i) begin
-            mem[wrptr_q] <= din_i;
+        if (wr_en_i && rd_en_i && empty_o) begin
+            dout_o <= din_i;
+        end 
+        else if (rd_en_i && !empty_o) begin
+            dout_o <= mem[rdptr_q];
+        end 
+        else begin
+            dout_o <= 0;
         end
     end
 end

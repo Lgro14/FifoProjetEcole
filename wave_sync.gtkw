@@ -1,0 +1,45 @@
+[*]
+[*] GTKWave Analyzer v3.3.125 (w)1999-2025 BSI
+[*] Thu Apr 30 10:19:29 2026
+[*]
+[dumpfile] "/home/diego/Documentos/ISMIN_2026-1/Projet_Ecole/FifoProjetEcole/fifo_TB.vcd"
+[dumpfile_mtime] "Thu Apr 30 10:19:05 2026"
+[dumpfile_size] 3818
+[savefile] "/home/diego/Documentos/ISMIN_2026-1/Projet_Ecole/FifoProjetEcole/wave_sync.gtkw"
+[timestart] 165790
+[size] 2748 1662
+[pos] -1 -1
+*-14.000000 284320 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb_fifo.
+[sst_width] 380
+[signals_width] 464
+[sst_expanded] 1
+[sst_vpaned_height] 486
+@28
+tb_fifo.dut.clk
+tb_fifo.dut.rst_n
+@22
+tb_fifo.dut.din_i[7:0]
+tb_fifo.dut.dout_o[7:0]
+@28
+[color] 2
+tb_fifo.dut.wr_en_i
+[color] 2
+tb_fifo.dut.rd_en_i
+tb_fifo.dut.wrptr_q[2:0]
+tb_fifo.dut.rdptr_q[2:0]
+tb_fifo.dut.empty_o
+tb_fifo.dut.full_o
+@23
+tb_fifo.dut.count_q[3:0]
+@22
+tb_fifo.dut.\mem[0][7:0]
+tb_fifo.dut.\mem[1][7:0]
+tb_fifo.dut.\mem[2][7:0]
+tb_fifo.dut.\mem[3][7:0]
+tb_fifo.dut.\mem[4][7:0]
+tb_fifo.dut.\mem[5][7:0]
+tb_fifo.dut.\mem[6][7:0]
+tb_fifo.dut.\mem[7][7:0]
+[pattern_trace] 1
+[pattern_trace] 0
