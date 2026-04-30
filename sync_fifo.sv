@@ -18,17 +18,17 @@ logic [WIDTH-1:0] mem [0:DEPTH-1];
 
 localparam int nbit = 
     DEPTH <= 1 ? 1 :
-    $clog2(DEPTH) - 1;
-localparam int ncount = $clog2(DEPTH + 1) - 1;
+    $clog2(DEPTH);
+localparam int ncount = $clog2(DEPTH + 1);
 
 
-logic [nbit:0] wrptr_q;
-logic [nbit:0] rdptr_q;
-logic [ncount:0] count_q;
+logic [nbit-1:0] wrptr_q;
+logic [nbit-1:0] rdptr_q;
+logic [ncount-1:0] count_q;
 
-logic [nbit:0] wrptr_d;
-logic [nbit:0] rdptr_d;
-logic [ncount:0] count_d;
+logic [nbit-1:0] wrptr_d;
+logic [nbit-1:0] rdptr_d;
+logic [ncount-1:0] count_d;
 
 assign empty_o = (count_q == 0);
 assign full_o = (count_q == DEPTH);
