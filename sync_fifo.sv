@@ -32,10 +32,6 @@ logic [ncount:0] count_d;
 
 assign empty_o = (count_q == 0);
 assign full_o = (count_q == DEPTH);
-assign dout_o =
-    (empty_o && wr_en_i && rd_en_i) ? din_i :
-    empty_o ? '0 :
-    mem[rdptr_q];
 
 always_comb begin
     wrptr_d = wrptr_q;
@@ -86,7 +82,17 @@ always_ff @(posedge clk) begin
         if (wr_en_i && ((!rd_en_i && !full_o) || (rd_en_i && !empty_o))) begin
             mem[wrptr_q] <= din_i;
         end
+        if(empty_o && wr_en_i && rd_en_i) begin
+            dout_o <= din_i;
+        end
+        else if (rd_en_i) begin
+            dout_o <= mem[wrptr_q];
+        end
+        else begin
+            dout_o <= 0;
+        end
     end
 end
+
 
 endmodule
