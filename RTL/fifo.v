@@ -38,6 +38,7 @@ reg [$clog2(DEPTH)-1:0] wr_ptr_q, wr_ptr_n;
 reg [$clog2(DEPTH)-1:0] rd_ptr_q, rd_ptr_n;
 reg [WIDTH-1:0] d_out_q, d_out_n;
 
+// DFF - d_out 
 always @(posedge clk or posedge rst) begin
     if (rst) begin
         d_out_q <= 0;
@@ -46,12 +47,7 @@ always @(posedge clk or posedge rst) begin
     end
 end
 
-always @(posedge clk) begin
-    if(wr_en && !full) begin
-        MEM[wr_ptr_q] <= d_in;
-    end
-end
-
+// DFF - wr_ptr and rd_ptr
 always @(posedge clk or posedge rst) begin
     if (rst) begin
         wr_ptr_q <= 0;
@@ -62,23 +58,40 @@ always @(posedge clk or posedge rst) begin
     end
 end
 
-always @(*) begin
+always @(posedge clk) begin
+    if(wr_en && !full && !(rd_en && empty)) begin
+        MEM[wr_ptr_q] <= d_in;
+    end
+end
 
+always @(*) begin
     // Write
-    if(wr_en && !full) begin
+    if(wr_en && !full && !(rd_en && empty)) begin
         wr_ptr_n = wr_ptr_q + 1'b1;
-    end else begin
+    end 
+    else begin
         wr_ptr_n = wr_ptr_q;
     end
+    
 
-    // Read
     if(rd_en && !empty) begin
         rd_ptr_n = rd_ptr_q + 1'b1;
-        d_out_n = MEM[rd_ptr_q];
-    end else begin
+    end 
+    else begin
         rd_ptr_n = rd_ptr_q;
+    end
+
+    if (rd_en && wr_en && empty) begin
+        d_out_n = d_in;
+    end
+    else if(rd_en && !empty) begin
+        d_out_n = MEM[rd_ptr_q];
+    end 
+    else begin
         d_out_n = d_out_q;
     end
+
+
 end
 
 always @(*) begin

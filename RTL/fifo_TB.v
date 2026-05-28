@@ -35,12 +35,11 @@ module tb_fifo();
 
     initial begin
         clk = 1;
-        forever #5 clk = ~clk; // (Periodo de 10ns -> 100MHz)
+        forever #5 clk = ~clk; // (Period 10ns -> 100MHz)
     end
 
 
     initial begin
-        // Configuración para generar archivos de forma de onda (VCD)
         $dumpfile("fifo_TB.vcd");
         $dumpvars(0, tb_fifo);
         for(idx = 0; idx < DEPTH; idx = idx +1)  $dumpvars(0, tb_fifo.dut.MEM[idx]);
@@ -57,21 +56,27 @@ module tb_fifo();
 
         $display("--- Iniciando pruebas de la FIFO ---");
 
+
+
         // 1. Prueba de ESCRITURA hasta llenar la memoria
         $display("[%0t] TEST 1: Escribiendo datos en la FIFO...", $time);
+
         wr_en = 1;
+
         // Escribimos DEPTH veces para intentar llenarla
-        repeat (DEPTH) begin
+        repeat (DEPTH+2) begin
             d_in = $random; // Dato aleatorio
             #10;
         end
         wr_en = 0;
         #20;
 
+
+
         // 2. Prueba de LECTURA hasta vaciar la memoria
         $display("[%0t] TEST 2: Leyendo datos de la FIFO...", $time);
         rd_en = 1;
-        repeat (DEPTH) begin
+        repeat (DEPTH+2) begin
             #10;
         end
         rd_en = 0;
@@ -79,12 +84,33 @@ module tb_fifo();
 
   
 
-        $display("[%0t] TEST 3: Escritura y Lectura simultánea...", $time);
+        $display("[%0t] TEST 3: Escritura y Lectura simultánea (no empty)...", $time);
+        // Primero metemos un dato
+        wr_en = 1; d_in = 8'hAA; #10;
+        // Ahora leemos y escribimos al mismo tiempo
+        rd_en = 1; wr_en = 1; d_in = 8'hBB; #10;
+        rd_en = 1; wr_en = 1; d_in = 8'hCC; #10;
+        rd_en = 1; wr_en = 1; d_in = 8'hDD; #10;
+        rd_en = 1; wr_en = 1; d_in = 8'hEE; #10;
+        rd_en = 1; wr_en = 1; d_in = 8'hFF; #10;
+        rd_en = 1; wr_en = 1; d_in = 8'hAA; #10;
+        rd_en = 1; wr_en = 1; d_in = 8'hBB; #10;
+        
+        // Dejamos de escribir, solo leemos el último
+        wr_en = 0; #10;
+        rd_en = 0; #20;
+
+        $display("[%0t] TEST 4: Escritura y Lectura simultánea (empty)...", $time);
         // Primero metemos un dato
         rd_en = 1; wr_en = 1; d_in = 8'hAA; #10;
         // Ahora leemos y escribimos al mismo tiempo
         rd_en = 1; wr_en = 1; d_in = 8'hBB; #10;
         rd_en = 1; wr_en = 1; d_in = 8'hCC; #10;
+        rd_en = 1; wr_en = 1; d_in = 8'hDD; #10;
+        rd_en = 1; wr_en = 1; d_in = 8'hEE; #10;
+        rd_en = 1; wr_en = 1; d_in = 8'hFF; #10;
+        rd_en = 1; wr_en = 1; d_in = 8'hAA; #10;
+        rd_en = 1; wr_en = 1; d_in = 8'hBB; #10;
         
         // Dejamos de escribir, solo leemos el último
         wr_en = 0; #10;

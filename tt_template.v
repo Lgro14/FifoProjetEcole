@@ -1,27 +1,65 @@
-/*
- * Copyright (c) 2024 Your Name
- * SPDX-License-Identifier: Apache-2.0
- */
-
 `default_nettype none
 
 module tt_um_example (
-    input  wire [7:0] ui_in,    // Dedicated inputs
-    output wire [7:0] uo_out,   // Dedicated outputs
-    input  wire [7:0] uio_in,   // IOs: Input path
-    output wire [7:0] uio_out,  // IOs: Output path
-    output wire [7:0] uio_oe,   // IOs: Enable path (active high: 0=input, 1=output)
-    input  wire       ena,      // always 1 when the design is powered, so you can ignore it
-    input  wire       clk,      // clock
-    input  wire       rst_n     // reset_n - low to reset
+    input  wire [7:0] ui_in,
+    output wire [7:0] uo_out,
+    input  wire [7:0] uio_in,
+    output wire [7:0] uio_out,
+    output wire [7:0] uio_oe,
+    input  wire       ena,
+    input  wire       clk,
+    input  wire       rst_n
 );
 
-  // All output pins must be assigned. If not used, assign to 0.
-  assign uo_out  = ui_in + uio_in;  // Example: ou_out is the sum of ui_in and uio_in
-  assign uio_out = 0;
-  assign uio_oe  = 0;
+    // TinyTapeout input mapping:
+    // ui_in[7:0]  -> FIFO data input
+    // uio_in[0]   -> write enable
+    // uio_in[1]   -> read enable
+    //
+    // TinyTapeout output mapping:
+    // uo_out[7:0] -> FIFO data output
+    // uio_out[2]  -> full flag
+    // uio_out[3]  -> empty flag
 
-  // List all unused inputs to prevent warnings
-  wire _unused = &{ena, clk, rst_n, 1'b0};
+    wire wr_en_i;
+    wire rd_en_i;
+    wire full_o;
+    wire empty_o;
+
+    assign wr_en_i = uio_in[0];
+    assign rd_en_i = uio_in[1];
+
+    sync_fifo #(
+        .DEPTH(8),
+        .WIDTH(8)
+    ) fifo_inst (
+        .clk(clk),
+        .rst_n(rst_n),
+        .wr_en_i(wr_en_i),
+        .din_i(ui_in),
+        .rd_en_i(rd_en_i),
+        .dout_o(uo_out),
+        .full_o(full_o),
+        .empty_o(empty_o)
+    );
+
+    assign uio_out[0] = 1'b0;
+    assign uio_out[1] = 1'b0;
+    assign uio_out[2] = full_o;
+    assign uio_out[3] = empty_o;
+    assign uio_out[4] = 1'b0;
+    assign uio_out[5] = 1'b0;
+    assign uio_out[6] = 1'b0;
+    assign uio_out[7] = 1'b0;
+
+    // uio[0] and uio[1] are inputs.
+    // uio[2] and uio[3] are outputs for full/empty.
+    // The rest are unused inputs.
+    assign uio_oe = 8'b0000_1100;
+
+    // Avoid unused warning for ena.
+    wire _unused = &{ena, uio_in[7:2], 1'b0};
 
 endmodule
+
+`default_nettype wire
