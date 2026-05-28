@@ -1,1 +1,7 @@
 __pycache__/
+# Simulation iverilog
+**/*.vcd
+**/*.out
+**/*.vvp
+# Simulation artifacts
+sim_build/
