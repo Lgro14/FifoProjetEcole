@@ -63,7 +63,7 @@ always_comb begin
     end
 end
 
-always_ff @(posedge clk) begin
+always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         wrptr_q <= '0;
         rdptr_q <= '0;
