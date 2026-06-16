@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 
 module sync_fifo #(
-    parameter DEPTH = 8,
+    parameter DEPTH = 128,
     parameter WIDTH = 8
 )(
     input logic clk,

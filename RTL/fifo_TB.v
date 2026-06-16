@@ -42,7 +42,7 @@ module tb_fifo();
     initial begin
         $dumpfile("fifo_TB.vcd");
         $dumpvars(0, tb_fifo);
-        for(idx = 0; idx < DEPTH; idx = idx +1)  $dumpvars(0, tb_fifo.dut.MEM[idx]);
+        //for(idx = 0; idx < DEPTH; idx = idx +1)  $dumpvars(0, tb_fifo.dut.MEM_q[idx]);
 
         // 0. Inicialización de señales
         rst = 1;

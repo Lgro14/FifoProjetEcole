@@ -1,7 +1,7 @@
 module sync_fifo #(
     
     //Constantes configurables
-    parameter int DEPTH = 8,  
+    parameter int DEPTH = 17,  
     parameter int WIDTH = 8
 
 )(

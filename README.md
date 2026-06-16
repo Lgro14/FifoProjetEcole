@@ -74,7 +74,7 @@ Finally, we validate everything by generating the GDS file:
 klayout runs/wokwi/final/gds/tt_um_factory_test.gds
 ```
 
-## Week 2: RTL Design and Functional Verification
+## Week 2-3: RTL Design and Functional Verification
 
 ### Overview
 
@@ -151,6 +151,9 @@ The memory is considered full when the write pointer plus one equals the read po
    wr_ptr_q   rd_ptr_q
 ```
 >**[ i ] Note:&nbsp;**  One memory slot is intentionally left unwritten. The full flag is asserted automatically to prevent writing into this final slot. This design choice is necessary to avoid confusing the full condition with the empty condition (which would happen if the pointers were allowed to overlap again).
+
+## Week 4: Synthesis and Timing Analysis
+
 
 
 Porque se eligió un modelo que solo admite potencias de 2, 
