@@ -33,10 +33,12 @@ module fifo #(
     output reg empty
 );
 
+parameter AW = $clog2(DEPTH);
+
 reg [DEPTH-1:0][WIDTH-1:0] MEM;
 
-reg [$clog2(DEPTH)-1:0] wr_ptr_q, wr_ptr_n;
-reg [$clog2(DEPTH)-1:0] rd_ptr_q, rd_ptr_n;
+reg [AW:0] wr_ptr_q, wr_ptr_n;
+reg [AW:0] rd_ptr_q, rd_ptr_n;
 
 reg [WIDTH-1:0] d_out_q, d_out_n;
 
@@ -54,7 +56,7 @@ always @(posedge clk or posedge rst) begin
     if (rst) begin
         MEM <= 0;
     end else if(wr_en && !full && !(rd_en && empty)) begin
-        MEM[wr_ptr_q] = d_in;
+        MEM[wr_ptr_q[AW-1:0]] = d_in;
     end
 end
 
@@ -86,11 +88,12 @@ always @(*) begin
         rd_ptr_n = rd_ptr_q;
     end
 
+    // Output
     if (rd_en && wr_en && empty) begin
         d_out_n = d_in;
     end
     else if(rd_en && !empty) begin
-        d_out_n = MEM[rd_ptr_q];
+        d_out_n = MEM[rd_ptr_q[AW-1:0]];
     end 
     else begin
         d_out_n = d_out_q;
@@ -98,7 +101,7 @@ always @(*) begin
 end
 
 always @(*) begin
-    full = (wr_ptr_q + 1'b1) == rd_ptr_q;
+    full = ((wr_ptr_q[AW-1:0]==rd_ptr_q[AW-1:0]) && (wr_ptr_q[AW]!=rd_ptr_q[AW]));
     empty = wr_ptr_q == rd_ptr_q;
 end
 
