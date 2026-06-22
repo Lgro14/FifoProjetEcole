@@ -75,6 +75,9 @@ always_ff @(posedge clk or negedge rst_n) begin
         rdptr_q <= '0;
         count_q <= '0;
         dout_o <= '0;
+        for (int i = 0; i < DEPTH; i++) begin
+            mem[i] <= '0;
+        end
     end
     else begin
         wrptr_q <= wrptr_d;
